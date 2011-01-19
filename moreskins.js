@@ -205,8 +205,8 @@ CoolClock.config.skins = {
 		smallIndicator:   { lineWidth: 2, startAt: 50, endAt: 70, color: "#d93d04", alpha: 5 },
 		largeIndicator:   { lineWidth: 2, startAt: 45, endAt: 94, color: "#a9bf04", alpha: 1 },
 		hourHand:         { lineWidth: 5, startAt: -20, endAt: 80, color: "#8c0d17", alpha: 1 },
-		minuteHand:       { lineWidth: 2, startAt: -20, endAt: 80, color: "#7c8c03", alpha: .9 },
-		secondHand:       { lineWidth: 2, startAt: 70, endAt: 94, color: "#d93d04", alpha: .85 },
-		secondDecoration: { lineWidth: 1, startAt: 70, radius: 3, fillColor: "red", color: "black", alpha: .7 }
+		minuteHand:       { lineWidth: 2, startAt: -20, endAt: 80, color: "#7c8c03", alpha: 0.9 },
+		secondHand:       { lineWidth: 2, startAt: 70, endAt: 94, color: "#d93d04", alpha: 0.85 },
+		secondDecoration: { lineWidth: 1, startAt: 70, radius: 3, fillColor: "red", color: "black", alpha: 0.7 }
 	}
 };

@@ -11,7 +11,7 @@
 // Constructor for CoolClock objects
 window.CoolClock = function(options) {
 	return this.init(options);
-}
+};
 
 // Config contains some defaults, and clock skins
 CoolClock.config = {
@@ -77,11 +77,11 @@ CoolClock.prototype = {
 		this.canvasId       = options.canvasId;
 		this.skinId         = options.skinId || CoolClock.config.defaultSkin;
 		this.displayRadius  = options.displayRadius || CoolClock.config.defaultRadius;
-		this.showSecondHand = typeof options.showSecondHand == "boolean" ? options.showSecondHand : true;
+		this.showSecondHand = typeof options.showSecondHand === "boolean" ? options.showSecondHand : true;
 		this.gmtOffset      = (options.gmtOffset != null && options.gmtOffset != '') ? parseFloat(options.gmtOffset) : null;
-		this.showDigital    = typeof options.showDigital == "boolean" ? options.showDigital : false;
-		this.logClock       = typeof options.logClock == "boolean" ? options.logClock : false;
-		this.logClockRev    = typeof options.logClock == "boolean" ? options.logClockRev : false;
+		this.showDigital    = typeof options.showDigital === "boolean" ? options.showDigital : false;
+		this.logClock       = typeof options.logClock === "boolean" ? options.logClock : false;
+		this.logClockRev    = typeof options.logClock === "boolean" ? options.logClockRev : false;
 
 		this.tickDelay      = CoolClock.config[ this.showSecondHand ? "tickDelay" : "longTickDelay" ];
 
@@ -154,7 +154,7 @@ CoolClock.prototype = {
 		this.ctx.save();
 		this.ctx.font = '15px sans-serif';
 		var tSize = this.ctx.measureText(theText);
-		if (!tSize.height) tSize.height = 15; // no height in firefox.. :(
+		if (!tSize.height) { tSize.height = 15; } // no height in firefox.. :(
 		this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
 		this.ctx.restore();
 	},
@@ -185,8 +185,7 @@ CoolClock.prototype = {
 			(c.showAmPm ? ((hour%12)==0 ? 12 : (hour%12)) : hour) + ':' +
 			this.lpad2(min) +
 			(c.showSecs ? ':' + this.lpad2(sec) : '') +
-			(c.showAmPm ? (hour < 12 ? ' am' : ' pm') : '')
-		;
+			(c.showAmPm ? (hour < 12 ? ' am' : ' pm') : '');
 	},
 
 	// Draw a radial line by rotating then drawing a straight line
@@ -199,16 +198,17 @@ CoolClock.prototype = {
 		this.ctx.strokeStyle = skin.color;
 		this.ctx.lineWidth = skin.lineWidth;
 
-		if (CoolClock.config.isIE)
+		if (CoolClock.config.isIE) {
 			// excanvas doesn't scale line width so we will do it here
 			this.ctx.lineWidth = this.ctx.lineWidth * this.scale;
+		}
 
 		if (skin.radius) {
-			this.fullCircleAt(skin.startAt,0,skin)
+			this.fullCircleAt(skin.startAt,0,skin);
 		}
 		else {
 			this.ctx.beginPath();
-			this.ctx.moveTo(skin.startAt,0)
+			this.ctx.moveTo(skin.startAt,0);
 			this.ctx.lineTo(skin.endAt,0);
 			this.ctx.stroke();
 		}
@@ -216,21 +216,24 @@ CoolClock.prototype = {
 	},
 
 	render: function(hour,min,sec) {
+		var i;
+
 		// Get the skin
 		var skin = CoolClock.config.skins[this.skinId];
-		if (!skin) skin = CoolClock.config.skins[CoolClock.config.defaultSkin];
+		if (!skin) { skin = CoolClock.config.skins[CoolClock.config.defaultSkin]; }
 
 		// Clear
 		this.ctx.clearRect(0,0,this.renderRadius*2,this.renderRadius*2);
 
 		// Draw the outer edge of the clock
-		if (skin.outerBorder)
+		if (skin.outerBorder) {
 			this.fullCircleAt(this.renderRadius,this.renderRadius,skin.outerBorder);
+		}
 
 		// Draw the tick marks. Every 5th one is a big one
-		for (var i=0;i<60;i++) {
-			(i%5)  && skin.smallIndicator && this.radialLineAtAngle(this.tickAngle(i),skin.smallIndicator);
-			!(i%5) && skin.largeIndicator && this.radialLineAtAngle(this.tickAngle(i),skin.largeIndicator);
+		for (i = 0; i < 60; i++) {
+			if ((i%5)  && skin.smallIndicator) { this.radialLineAtAngle(this.tickAngle(i),skin.smallIndicator); }
+			if ((i%5) === 0 && skin.largeIndicator) { this.radialLineAtAngle(this.tickAngle(i),skin.largeIndicator); }
 		}
 
 		// Write the time
@@ -243,18 +246,22 @@ CoolClock.prototype = {
 		}
 
 		// Draw the hands
-		if (skin.hourHand)
+		if (skin.hourHand) {
 			this.radialLineAtAngle(this.tickAngle(((hour%12)*5 + min/12.0)),skin.hourHand);
+		}
 
-		if (skin.minuteHand)
+		if (skin.minuteHand) {
 			this.radialLineAtAngle(this.tickAngle((min + sec/60.0)),skin.minuteHand);
+		}
 
-		if (this.showSecondHand && skin.secondHand)
+		if (this.showSecondHand && skin.secondHand) {
 			this.radialLineAtAngle(this.tickAngle(sec),skin.secondHand);
+		}
 
 		// Second hand decoration doesn't render right in IE so lets turn it off
-		if (!CoolClock.config.isIE && this.showSecondHand && skin.secondDecoration)
+		if (!CoolClock.config.isIE && this.showSecondHand && skin.secondDecoration) {
 			this.radialLineAtAngle(this.tickAngle(sec),skin.secondDecoration);
+		}
 	},
 
 	// Check the time and display the clock
@@ -298,7 +305,7 @@ CoolClock.prototype = {
 	// Main tick handler. Refresh the clock then setup the next tick
 	tick: function() {
 		if (this.stillHere() && this.active) {
-			this.refreshDisplay()
+			this.refreshDisplay();
 			this.nextTick();
 		}
 	}
@@ -306,12 +313,13 @@ CoolClock.prototype = {
 
 // Find all canvas elements that have the CoolClock class and turns them into clocks
 CoolClock.findAndCreateClocks = function() {
+	var i;
 	// (Let's not use a jQuery selector here so it's easier to use frameworks other than jQuery)
 	var canvases = document.getElementsByTagName("canvas");
-	for (var i=0;i<canvases.length;i++) {
+	for (i = 0; i < canvases.length; i++) {
 		// Pull out the fields from the class. Example "CoolClock:chunkySwissOnBlack:1000"
 		var fields = canvases[i].className.split(" ")[0].split(":");
-		if (fields[0] == "CoolClock") {
+		if (fields[0] === "CoolClock") {
 			if (!canvases[i].id) {
 				// If there's no id on this canvas element then give it one
 				canvases[i].id = '_coolclock_auto_id_' + CoolClock.config.noIdCount++;
@@ -321,11 +329,11 @@ CoolClock.findAndCreateClocks = function() {
 				canvasId:       canvases[i].id,
 				skinId:         fields[1],
 				displayRadius:  fields[2],
-				showSecondHand: fields[3]!='noSeconds',
+				showSecondHand: fields[3]!=='noSeconds',
 				gmtOffset:      fields[4],
-				showDigital:    fields[5]=='showDigital',
-				logClock:       fields[6]=='logClock',
-				logClockRev:    fields[6]=='logClockRev'
+				showDigital:    fields[5]==='showDigital',
+				logClock:       fields[6]==='logClock',
+				logClockRev:    fields[6]==='logClockRev'
 			});
 		}
 	}
@@ -333,4 +341,4 @@ CoolClock.findAndCreateClocks = function() {
 
 // If you don't have jQuery then you need a body onload like this: <body onload="CoolClock.findAndCreateClocks()">
 // If you do have jQuery and it's loaded already then we can do it right now
-if (window.jQuery) jQuery(document).ready(CoolClock.findAndCreateClocks);
+if (window.jQuery) { jQuery(document).ready(CoolClock.findAndCreateClocks); }
