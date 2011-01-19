@@ -348,15 +348,30 @@ CoolClock.findAndCreateClocks = function(el) {
 	// (Let's not use a jQuery selector here so it's easier to use frameworks other than jQuery)
 	var canvases = (el || document).getElementsByTagName("canvas");
 	for (i = 0; i < canvases.length; i++) {
+		var elemID = canvases[i].id;
+		if (elemID)
+		{
+			var cv = $(elemID);
+			if (cv && cv.retrieve)
+			{
+				var clkcls = cv.retrieve('coolclock');
+				if (clkcls && clkcls.fullCircleAt)
+				{
+					// CoolClock instance for this one already exists!
+					continue;
+				}
+			}
+		}
+
 		// Pull out the fields from the class. Example "CoolClock:chunkySwissOnBlack:1000"
 		var fields = canvases[i].className.split(" ")[0].split(":");
 		if (fields[0] === "CoolClock") {
 			if (!canvases[i].id) {
 				// If there's no id on this canvas element then give it one
-				canvases[i].id = '_coolclock_auto_id_' + CoolClock.config.noIdCount++;
+				elemID = canvases[i].id = '_coolclock_auto_id_' + CoolClock.config.noIdCount++;
 			}
 			// Create a clock object for this element
-			new CoolClock({
+			var clki = new CoolClock({
 				canvasId:       canvases[i].id,
 				skinId:         fields[1],
 				displayRadius:  fields[2],
@@ -366,6 +381,11 @@ CoolClock.findAndCreateClocks = function(el) {
 				logClock:       fields[6]==='logClock',
 				logClockRev:    fields[6]==='logClockRev'
 			});
+			var cv = $(elemID);
+			if (cv && cv.store)
+			{
+				cv.store('coolclock', clki);
+			}
 		}
 	}
 };
