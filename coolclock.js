@@ -289,8 +289,7 @@ CoolClock.prototype = {
 			this.radialLineAtAngle(this.tickAngle(sec),skin.secondHand);
 		}
 
-		// Second hand decoration doesn't render right in IE so lets turn it off
-		if (!CoolClock.config.isIE && this.showSecondHand && skin.secondDecoration) {
+		if (this.showSecondHand && skin.secondDecoration) {
 			this.radialLineAtAngle(this.tickAngle(sec),skin.secondDecoration);
 		}
 	},
