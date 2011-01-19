@@ -140,9 +140,9 @@ CoolClock.prototype = {
 			this.ctx.lineWidth = this.ctx.lineWidth * this.scale;
 		}
 
-		this.ctx.arc(x, y, skin.radius, 0, 2*Math.PI, false);
+		this.ctx.arc(x, y, skin.radius, 2*Math.PI, 0, true);
 
-		if (CoolClock.config.isIE) {
+		if (CoolClock.config.isIE && false) {
 			// excanvas doesn't close the circle so let's fill in the tiny gap
 			this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
 		}
