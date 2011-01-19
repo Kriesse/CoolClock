@@ -142,30 +142,16 @@ CoolClock.prototype = {
 
 		this.ctx.arc(x, y, skin.radius, 2*Math.PI, 0, true);
 
-		if (CoolClock.config.isIE && false) {
-			// excanvas doesn't close the circle so let's fill in the tiny gap
-			this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
-		}
+		//if (CoolClock.config.isIE) {
+		//	// excanvas doesn't close the circle so let's fill in the tiny gap
+		//	this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
+		//}
 
 		if (skin.fillColor && skin.color) {
 			this.ctx.fillStyle = skin.fillColor;
 			this.ctx.fill();
-			if (0)
-			{
-			// must do the stroke separately:
-			var skc = {
-				alpha: skin.alpha,
-				lineWidth: skin.lineWidth,
-				radius: skin.radius,
-				color: skin.color
-			};
-			this.fullCircleAt(x, y, skc);
-			}
-			else
-			{
 			this.ctx.strokeStyle = skin.color;
 			this.ctx.stroke();
-			}
 		}
 		else if (skin.fillColor) {
 			// only fill
