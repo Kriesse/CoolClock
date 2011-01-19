@@ -17,8 +17,8 @@ window.CoolClock = function(options) {
 CoolClock.config = {
 	tickDelay: 1000,
 	longTickDelay: 15000,
-	defaultRadius: 85,
-	renderRadius: 100,
+	defaultRadius: 85,    // The ACTUAL radius at which the clock will be SHOWN ON SCREEN; the ratio of this one and 'renderRadius' determines the scaling applied to the skin.
+	renderRadius: 100,    // the radius at which all elements are rendered, i.e. the radius assumed by all the skins. Keep at 100.
 	defaultSkin: "chunkySwiss",
 	// Should be in skin probably...
 	// (TODO: allow skinning of digital display)
@@ -29,6 +29,16 @@ CoolClock.config = {
 		// There are more skins in moreskins.js
 		// Try making your own skin by copy/pasting one of these and tweaking it
 		swissRail: {
+			/*
+			 NOTES:
+				- 'alpha' affects both color AND fillColor application since v2.x
+
+				- when a skin item has the fillColor specified, the 'color' value
+				  remains unused as only the fill is drawn (the border is not drawn then!)
+
+				- radius and other sizes are all based on the 'renderRadius' norm (default: 100); the
+				  instance's 'displayRadius' determines how large a clock the user gets to see.
+			*/
 			outerBorder: { lineWidth: 2, radius:95, color: "black", alpha: 1 },
 			smallIndicator: { lineWidth: 2, startAt: 88, endAt: 92, color: "black", alpha: 1 },
 			largeIndicator: { lineWidth: 4, startAt: 79, endAt: 92, color: "black", alpha: 1 },
