@@ -343,10 +343,10 @@ CoolClock.prototype = {
 };
 
 // Find all canvas elements that have the CoolClock class and turns them into clocks
-CoolClock.findAndCreateClocks = function() {
+CoolClock.findAndCreateClocks = function(el) {
 	var i;
 	// (Let's not use a jQuery selector here so it's easier to use frameworks other than jQuery)
-	var canvases = document.getElementsByTagName("canvas");
+	var canvases = (el || document).getElementsByTagName("canvas");
 	for (i = 0; i < canvases.length; i++) {
 		// Pull out the fields from the class. Example "CoolClock:chunkySwissOnBlack:1000"
 		var fields = canvases[i].className.split(" ")[0].split(":");
