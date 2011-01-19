@@ -1,3 +1,10 @@
+/*
+Because these OVERRIDE the skin(s) defined in coolclock.js itself, we make sure the 'default skin' is also
+adjusted accordingly.
+*/
+CoolClock.config.defaultSkin = 'chunkySwiss';
+
+
 CoolClock.config.skins = {
 
 	swissRail: {
