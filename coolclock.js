@@ -370,6 +370,15 @@ CoolClock.findAndCreateClocks = function(el) {
 				// If there's no id on this canvas element then give it one
 				elemID = canvases[i].id = '_coolclock_auto_id_' + CoolClock.config.noIdCount++;
 			}
+
+			var cv = $(elemID);
+
+			// Dynamically initialize canvas using excanvas. This is only required by IE
+			if (Browser && Browser.ie && MUI && MUI.ieSupport == 'excanvas')
+			{
+				G_vmlCanvasManager.initElement(cv);
+			}
+
 			// Create a clock object for this element
 			var clki = new CoolClock({
 				canvasId:       canvases[i].id,
@@ -381,7 +390,7 @@ CoolClock.findAndCreateClocks = function(el) {
 				logClock:       fields[6]==='logClock',
 				logClockRev:    fields[6]==='logClockRev'
 			});
-			var cv = $(elemID);
+
 			if (cv && cv.store)
 			{
 				cv.store('coolclock', clki);
