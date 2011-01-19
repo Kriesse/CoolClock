@@ -147,12 +147,33 @@ CoolClock.prototype = {
 			this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
 		}
 
-		if (skin.fillColor) {
-			this.ctx.fillStyle = skin.fillColor
+		if (skin.fillColor && skin.color) {
+			this.ctx.fillStyle = skin.fillColor;
+			this.ctx.fill();
+			if (0)
+			{
+			// must do the stroke separately:
+			var skc = {
+				alpha: skin.alpha,
+				lineWidth: skin.lineWidth,
+				radius: skin.radius,
+				color: skin.color
+			};
+			this.fullCircleAt(x, y, skc);
+			}
+			else
+			{
+			this.ctx.strokeStyle = skin.color;
+			this.ctx.stroke();
+			}
+		}
+		else if (skin.fillColor) {
+			// only fill
+			this.ctx.fillStyle = skin.fillColor;
 			this.ctx.fill();
 		}
 		else {
-			// XXX why not stroke and fill
+			// only stroke
 			this.ctx.strokeStyle = skin.color;
 			this.ctx.stroke();
 		}
