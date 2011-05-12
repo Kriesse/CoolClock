@@ -67,7 +67,7 @@ CoolClock.config = {
 	},
 
 	// Test for IE so we can nurse excanvas in a couple of places
-	isIE: !!document.all,
+	isIE: (!!document.all && typeof G_vmlCanvasManager === 'object' && G_vmlCanvasManager.initElement),
 
 	// Will store (a reference to) each clock here, indexed by the id of the canvas element
 	clockTracker: {},
@@ -96,6 +96,11 @@ CoolClock.prototype = {
 
 		this.lastDrawnState = false;
 
+		// Dynamically initialize canvas using excanvas. This is only required by IE
+		if (CoolClock.config.isIE)
+		{
+			G_vmlCanvasManager.initElement(cv);
+		}
 
 		// Get the canvas element
 		this.canvas = document.getElementById(this.canvasId);
@@ -400,12 +405,6 @@ CoolClock.findAndCreateClocks = function(el) {
 			}
 
 			var cv = $(elemID);
-
-			// Dynamically initialize canvas using excanvas. This is only required by IE
-			if (Browser && Browser.ie && MUI && MUI.ieSupport == 'excanvas')
-			{
-				G_vmlCanvasManager.initElement(cv);
-			}
 
 			// Create a clock object for this element
 			var clki = new CoolClock({
