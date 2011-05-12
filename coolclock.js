@@ -39,7 +39,9 @@ CoolClock.config = {
 			hourHand:         { lineWidth: 8, startAt: -15, endAt: 50, color: "black", alpha: 1 },
 			minuteHand:       { lineWidth: 7, startAt: -15, endAt: 75, color: "black", alpha: 1 },
 			secondHand:       { lineWidth: 1, startAt: -20, endAt: 85, color: "red", alpha: 1 },
-			secondDecoration: { lineWidth: 1, startAt: 70, radius: 4, fillColor: "red", color: "red", alpha: 1 }
+			secondDecoration: { lineWidth: 1, startAt: 70, radius: 4, fillColor: "red", color: "red", alpha: 1 },
+			/* set .showDigitalSeconds to 'false' instead of this two-element array when you want 24 hours display */
+			digital:          { fillColor: 'black', font: '15px sans-serif', showDigitalSeconds: false, AmPm: [' AM', ' PM'] }
 		},
 		chunkySwiss: {
 			outerBorder:      { lineWidth: 4, radius:97, color: "black", alpha: 1 },
@@ -48,7 +50,8 @@ CoolClock.config = {
 			hourHand:         { lineWidth: 12, startAt: -15, endAt: 60, color: "black", alpha: 1 },
 			minuteHand:       { lineWidth: 10, startAt: -15, endAt: 85, color: "black", alpha: 1 },
 			secondHand:       { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
-			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 }
+			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 },
+			digital:          { fillColor: 'black', font: '15px sans-serif', showDigitalSeconds: false, AmPm: [' AM', ' PM'] }
 		},
 		chunkySwissOnBlack: {
 			outerBorder:      { lineWidth: 4, radius:97, color: "white", alpha: 1 },
@@ -57,7 +60,8 @@ CoolClock.config = {
 			hourHand:         { lineWidth: 12, startAt: -15, endAt: 60, color: "white", alpha: 1 },
 			minuteHand:       { lineWidth: 10, startAt: -15, endAt: 85, color: "white", alpha: 1 },
 			secondHand:       { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
-			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 }
+			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 },
+			digital:          { fillColor: 'white', font: '15px sans-serif', showDigitalSeconds: false, AmPm: [' AM', ' PM'] }
 		}
 	},
 
@@ -189,12 +193,41 @@ CoolClock.prototype = {
 
 	// Draw some text centered vertically and horizontally
 	drawTextAt: function(theText, x, y, skin) {
+		var lineWidth = skin.lineWidth;                 // [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
+
 		this.ctx.save();
 		this.ctx.font = skin.font;
+		if (skin.alpha) { this.ctx.globalAlpha = skin.alpha; }
+		this.ctx.lineWidth = lineWidth;
+
+		if (CoolClock.config.isIE) {
+			// excanvas doesn't scale line width so we will do it here
+			this.ctx.lineWidth = lineWidth * this.scale;
+		}
+
 		this.ctx.color = skin.color;
 		var tSize = this.ctx.measureText(theText);
 		if (!tSize.height) { tSize.height = 15; } // no height in firefox.. :(
-		this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
+
+		// prevent FF4 from yakking about canvas: "an attempt to set strokeStyle or fillStyle to a value that is neither a string, a CanvasGradient, or a CanvasPattern was ignored."
+		//
+		// also prevent FF4 from drawing strokes of /intended/ lineWidth==0 as (mutated by FF4 in .ctx.lineWidth) lineWidth==1
+		if (skin.fillColor && skin.color && lineWidth > 0) {
+			this.ctx.fillStyle = skin.fillColor;
+			this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
+			this.ctx.strokeStyle = skin.color;
+			this.ctx.strokeText(theText,x - tSize.width/2,y - tSize.height/2);
+		}
+		else if (skin.fillColor) {
+			// only fill
+			this.ctx.fillStyle = skin.fillColor;
+			this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
+		}
+		else if (skin.color && lineWidth > 0) {
+			// only stroke
+			this.ctx.strokeStyle = skin.color;
+			this.ctx.strokeText(theText,x - tSize.width/2,y - tSize.height/2);
+		}
 		this.ctx.restore();
 	},
 
@@ -278,6 +311,17 @@ CoolClock.prototype = {
 		return h;
 	},
 
+	getSkinnedTextPosition: function(pos, skin) {
+		// simple check for X and Y; printing this test centered at (0,0) would clip ~ damage the text anyway, so we don't need to specifically check for undefined, null or false here
+		if (skin.textPosX) {
+			pos.x = skin.textPosX;
+		}
+		if (skin.textPosY) {
+			pos.y = skin.textPosY;
+		}
+		return pos;
+	},
+
 	/*
 	 * [i_a] CoolClock records the timestamp of the last rendering of the clock:
 	 * when render() is invoked multiple times for the same timestamp, only the first call
@@ -315,10 +359,18 @@ CoolClock.prototype = {
 
 		// Write the time
 		if (this.showDigital && skin.digital) {
+			var pos = this.getSkinnedTextPosition({
+				x: this.renderRadius,
+				y: this.renderRadius * 1.5
+			}, ((skin.digital && skin.digital.timeTextPosition) ? skin.digital.timeTextPosition : {}));
+
+			pos.x += this.renderDigitalOffsetX;
+			pos.y += this.renderDigitalOffsetY;
+
 			this.drawTextAt(
 				this.timeText(hour,min,sec, skin.digital),
-				this.renderRadius + this.renderDigitalOffsetX,
-				this.renderRadius + this.renderRadius/2 + this.renderDigitalOffsetY,
+				pos.x,
+				pos.y,
 				skin.digital
 			);
 		}
