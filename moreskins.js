@@ -24,8 +24,8 @@ CoolClock.config.skins = {
 		largeIndicator:   { lineWidth: 4, startAt: 79, endAt: 92, color: "black", alpha: 1 },
 		hourHand:         { lineWidth: 8, startAt: -15, endAt: 50, color: "black", alpha: 1 },
 		minuteHand:       { lineWidth: 7, startAt: -15, endAt: 75, color: "black", alpha: 1 },
-		secondHand:       { lineWidth: 1, startAt: -20, endAt: 85, color: "black", alpha: 1 },
-		secondDecoration: { lineWidth: 1, startAt: 70, radius: 4, fillColor: "white", color: "black", alpha: 1 },
+		secondHand:       { lineWidth: 1.5, startAt: -20, endAt: 85, color: "black", alpha: 1 },
+		secondDecoration: { lineWidth: 4, startAt: 60, radius: 6, fillColor: "white", color: "black", alpha: 1 },
 		digital:          { lineWidth: 1.3, color: 'black', font: '16px sans-serif', AmPm: false, timeTextPosition: { textPosX: 100, textPosY: 60 }  }
 	},
 
@@ -273,7 +273,7 @@ CoolClock.config.skins = {
 		digital:          { fillColor: 'white', font: '15px sans-serif', AmPm: [' AM', ' PM'], alpha: 0.75, timeTextPosition: { textPosX: 100, textPosY: 160 } }
 	},
 	mui_charcoal: {
-		outerBorder:      { lineWidth: 185, radius:1, color: "#000", alpha: 1 },
+		outerBorder:      { lineWidth: 1, radius: 96, fillColor: "#404040", color: "#000", alpha: 1 },
 		smallIndicator:   { lineWidth: 3, startAt: 88, endAt: 94, color: "#595959", alpha: 1 },
 		largeIndicator:   { lineWidth: 3, startAt: 82, endAt: 94, color: "#ddd", alpha: 1 },
 		hourHand:         { lineWidth: 4, startAt: 0, endAt: 58, color: "#fff", alpha: 1 },
@@ -291,7 +291,7 @@ CoolClock.config.skins = {
 		secondHand:       { lineWidth: 2, startAt: -18, endAt: 88, color: "#fff", alpha: 1 },
 		secondDecoration: { lineWidth: 0, startAt: 72, radius: 5, fillColor: "#fff", alpha: 1 },
 		// secondDecoration: { lineWidth: 2, startAt: 0, radius: 8, fillColor: "#90D224", color: "#fff", alpha: 1 },
-		_digital:          { fillColor: 'black', font: '15px sans-serif', AmPm: [' AM', ' PM'] }
+		digital:          { lineWidth: 1.3, color: "#fff", font: '40px sans-serif', AmPm: false, alpha: 0.75, timeTextPosition: { textPosX: 100, textPosY: 118 } }
 	},
 	defaultOld: {
 		outerBorder:      { lineWidth: 6, radius:98, color: "#fff", alpha: 1 },
@@ -304,33 +304,33 @@ CoolClock.config.skins = {
 		_digital:          { fillColor: 'black', font: '15px sans-serif', AmPm: [' AM', ' PM'] }
 	},
 	mochaUI1: {
-		outerBorder:      { lineWidth: 185, radius:1, color: "#000", alpha: 1 },
+		outerBorder:      { lineWidth: 1, radius: 97, fillColor: "#404040", color: "#000", alpha: 1 },
 		smallIndicator:   { lineWidth: 3, startAt: 88, endAt: 94, color: "#595959", alpha: 1 },
 		largeIndicator:   { lineWidth: 3, startAt: 82, endAt: 94, color: "#ddd", alpha: 1 },
 		hourHand:         { lineWidth: 4, startAt: 0, endAt: 58, color: "#fff", alpha: 1 },
 		minuteHand:       { lineWidth: 4, startAt: 0, endAt: 78, color: "#fff", alpha: 1 },
 		secondHand:       { lineWidth: 4, startAt: 82, endAt: 94, color: "#98B8D9", alpha: 1 },
 		secondDecoration: { lineWidth: 3, startAt: 0, radius: 6, fillColor: "white", color: "white", alpha: 1 },
-		_digital:          { fillColor: 'black', font: '15px sans-serif', AmPm: [' AM', ' PM'] }
+		digital:          { lineWidth: 1.3, color: "#98B8D9", font: '40px sans-serif', AmPm: false, alpha: 0.75, timeTextPosition: { textPosX: 100, textPosY: 100 } }
 	},
 	mochaUI2: {
-		outerBorder:      { lineWidth: 185, radius:1, color: "#000", alpha: 1 },
+		outerBorder:      { lineWidth: 1, radius: 97, fillColor: "#606060", color: "#000", alpha: 1 },
 		smallIndicator:   { lineWidth: 3, startAt: 88, endAt: 94, color: "#2CC2D1", alpha: 1 },
 		largeIndicator:   { lineWidth: 3, startAt: 82, endAt: 94, color: "#1BFFD9", alpha: 1 },
 		hourHand:         { lineWidth: 4, startAt: 0, endAt: 58, color: "#fff", alpha: 1 },
 		minuteHand:       { lineWidth: 4, startAt: 0, endAt: 78, color: "#fff", alpha: 1 },
 		secondHand:       { lineWidth: 4, startAt: 82, endAt: 94, color: "#EFCD5F", alpha: 1 },
 		secondDecoration: { lineWidth: 0, startAt: 0, radius: 6, fillColor: "#fff", alpha: 1 },
-		_digital:          { fillColor: 'black', font: '15px sans-serif', AmPm: [' AM', ' PM'] }
+		digital:          { lineWidth: 1.3, color: "#2CC2D1", font: '40px sans-serif', AmPm: false, alpha: 0.75, timeTextPosition: { textPosX: 100, textPosY: 100 } }
 	},
 	mochaUI3: {
-		outerBorder:      { lineWidth: 185, radius:1, color: "#000", alpha: 1 },
+		outerBorder:      { lineWidth: 1, radius: 97, fillColor: "#606060", color: "#000", alpha: 1 },
 		smallIndicator:   { lineWidth: 3, startAt: 88, endAt: 94, color: "#C7C3B7", alpha: 1 },
 		largeIndicator:   { lineWidth: 3, startAt: 82, endAt: 94, color: "#C7C3B7", alpha: 1 },
 		hourHand:         { lineWidth: 4, startAt: -1, endAt: 58, color: "#C7C3B7", alpha: 1 },
 		minuteHand:       { lineWidth: 4, startAt: -1, endAt: 78, color: "#C7C3B7", alpha: 1 },
 		secondHand:       { lineWidth: 3, startAt: 82, endAt: 94, color: "#ce1717", alpha: 1 },
 		secondDecoration: { lineWidth: 0, startAt: 0, radius: 6, fillColor: "#999", alpha: 1 },
-		_digital:          { fillColor: 'black', font: '15px sans-serif', AmPm: [' AM', ' PM'] }
+		digital:          { lineWidth: 1.3, color: "#C7C3B7", font: '40px sans-serif', AmPm: false, alpha: 0.75, timeTextPosition: { textPosX: 100, textPosY: 100 } }
 	}
 };
