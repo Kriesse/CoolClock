@@ -331,7 +331,8 @@ CoolClock.prototype = {
 		}
 
 		if (skin.minuteHand) {
-			this.radialLineAtAngle(this.tickAngle((min + sec/60.0)),skin.minuteHand);
+			var sm = (this.smoothMinutesHand && skin.smoothMinutesHand !== false);			// when this setting isn't in the skin, assume TRUE for the skin.
+			this.radialLineAtAngle(this.tickAngle((min + (sm ? sec/60.0 : 0))),skin.minuteHand);
 		}
 
 		if (this.showSecondHand && skin.secondHand) {
@@ -422,6 +423,7 @@ CoolClock.findAndCreateClocks = function(el) {
 				skinId:         fields[1],
 				displayRadius:  fields[2],
 				showSecondHand: fields[3]!=='noSeconds',
+				smoothMinutesHand: fields.length <= 3 || fields[3]==='smoothMinutesHand',
 				gmtOffset:      fields[4],
 				showDigital:    fields[5]==='showDigital',
 				logClock:       fields[6]==='logClock',
