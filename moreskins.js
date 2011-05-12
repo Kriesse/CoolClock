@@ -234,7 +234,7 @@ CoolClock.config.skins = {
 		hourHand:         { lineWidth: 6, startAt: -5, endAt: 53, color: "#FFF", alpha: 1 },
 		minuteHand:       { lineWidth: 6, startAt: -5, endAt: 80, color: "#FFF", alpha: 1 },
 		secondHand:       { lineWidth: 1.5, startAt: -18, endAt: 88, color: "#FFF", alpha: 1 },
-		secondDecoration: { lineWidth: 0, startAt: 72, radius: 5, fillColor: "#FFF", color: "red", alpha: 1 },		// color==red to exhibit a bug in FF4: line is drawn anyway, despite width==0!
+		secondDecoration: { lineWidth: 0, startAt: 72, radius: 5, fillColor: "#FFF", color: "red", alpha: 1 },      // color==red to exhibit a bug in FF4: line is drawn anyway, despite width==0!
 		// secondDecoration: { lineWidth: 2, startAt: 0, radius: 8, fillColor: "#577A9E", color: "#577A9E", alpha: 1 },
 		digital:          { color: 'black', font: '15px sans-serif', showDigitalSeconds: false, AmPm: [' AM', ' PM'] /* set to 'false' instead of this two-element array when you want 24 hours display */ }
 	},

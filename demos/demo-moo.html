@@ -14,26 +14,26 @@
 			.goto_index { float: right; }
 			img { border: 0; }
 		</style>
-		
+
 		<script>
 window.addEvent('load', function()       //using load instead of domready for IE8
 {
 	var div = $('picker');
 	var list = new Element('select', {
-		'id': 'CoolClockSkinList', 
+		'id': 'CoolClockSkinList',
 		'class': 'theme'
 	}).inject(div).addEvent('change', function(e) {
 		e.stop();
-		
+
 		var val = list.options[list.selectedIndex].value;
-		if (val) 
+		if (val)
 		{
 			for (var key in CoolClock.config.clockTracker)
 			{
 				var cc = CoolClock.config.clockTracker[key];
 				if (!cc || !cc.canvasId)
 					continue;
-					
+
 				// alter the skinId of the clocks; thanks to the render state hash in CoolClock, this change will be detected ASAP and the rendering adjusted accordingly.
 				cc.skinId = val;
 			}
@@ -52,10 +52,10 @@ window.addEvent('load', function()       //using load instead of domready for IE
 	</head>
 	<body>
 		<div class="goto_index"><a href="index.html" title="Go to the demo index page"><img src="home_16x16.png" /></a></div>
-		
+
 		<h1>Demo</h1>
 		<div id="picker"></div>
-		
+
 		<canvas class="CoolClock:mui_default"></canvas>
 		<canvas class="CoolClock:swissRail:120"></canvas>
 		<canvas class="CoolClock::40:noSeconds:+2.5"></canvas>

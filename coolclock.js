@@ -19,7 +19,7 @@ CoolClock.config = {
 	renderRadius: 100,    // the radius at which all elements are rendered, i.e. the radius assumed by all the skins. Keep at 100.
 	defaultSkin: "chunkySwiss",
 
-	skins:	{
+	skins:  {
 		// There are more skins in moreskins.js
 		// Try making your own skin by copy/pasting one of these and tweaking it
 		swissRail: {
@@ -33,33 +33,32 @@ CoolClock.config = {
 				- radius and other sizes are all based on the 'renderRadius' norm (default: 100); the
 				  instance's 'displayRadius' determines how large a clock the user gets to see.
 			*/
-			outerBorder: { lineWidth: 2, radius:95, color: "black", alpha: 1 },
-			smallIndicator: { lineWidth: 2, startAt: 88, endAt: 92, color: "black", alpha: 1 },
-			largeIndicator: { lineWidth: 4, startAt: 79, endAt: 92, color: "black", alpha: 1 },
-			hourHand: { lineWidth: 8, startAt: -15, endAt: 50, color: "black", alpha: 1 },
-			minuteHand: { lineWidth: 7, startAt: -15, endAt: 75, color: "black", alpha: 1 },
-			secondHand: { lineWidth: 1, startAt: -20, endAt: 85, color: "red", alpha: 1 },
+			outerBorder:      { lineWidth: 2, radius:95, color: "black", alpha: 1 },
+			smallIndicator:   { lineWidth: 2, startAt: 88, endAt: 92, color: "black", alpha: 1 },
+			largeIndicator:   { lineWidth: 4, startAt: 79, endAt: 92, color: "black", alpha: 1 },
+			hourHand:         { lineWidth: 8, startAt: -15, endAt: 50, color: "black", alpha: 1 },
+			minuteHand:       { lineWidth: 7, startAt: -15, endAt: 75, color: "black", alpha: 1 },
+			secondHand:       { lineWidth: 1, startAt: -20, endAt: 85, color: "red", alpha: 1 },
 			secondDecoration: { lineWidth: 1, startAt: 70, radius: 4, fillColor: "red", color: "red", alpha: 1 }
 		},
 		chunkySwiss: {
-			outerBorder: { lineWidth: 4, radius:97, color: "black", alpha: 1 },
-			smallIndicator: { lineWidth: 4, startAt: 89, endAt: 93, color: "black", alpha: 1 },
-			largeIndicator: { lineWidth: 8, startAt: 80, endAt: 93, color: "black", alpha: 1 },
-			hourHand: { lineWidth: 12, startAt: -15, endAt: 60, color: "black", alpha: 1 },
-			minuteHand: { lineWidth: 10, startAt: -15, endAt: 85, color: "black", alpha: 1 },
-			secondHand: { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
+			outerBorder:      { lineWidth: 4, radius:97, color: "black", alpha: 1 },
+			smallIndicator:   { lineWidth: 4, startAt: 89, endAt: 93, color: "black", alpha: 1 },
+			largeIndicator:   { lineWidth: 8, startAt: 80, endAt: 93, color: "black", alpha: 1 },
+			hourHand:         { lineWidth: 12, startAt: -15, endAt: 60, color: "black", alpha: 1 },
+			minuteHand:       { lineWidth: 10, startAt: -15, endAt: 85, color: "black", alpha: 1 },
+			secondHand:       { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
 			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 }
 		},
 		chunkySwissOnBlack: {
-			outerBorder: { lineWidth: 4, radius:97, color: "white", alpha: 1 },
-			smallIndicator: { lineWidth: 4, startAt: 89, endAt: 93, color: "white", alpha: 1 },
-			largeIndicator: { lineWidth: 8, startAt: 80, endAt: 93, color: "white", alpha: 1 },
-			hourHand: { lineWidth: 12, startAt: -15, endAt: 60, color: "white", alpha: 1 },
-			minuteHand: { lineWidth: 10, startAt: -15, endAt: 85, color: "white", alpha: 1 },
-			secondHand: { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
+			outerBorder:      { lineWidth: 4, radius:97, color: "white", alpha: 1 },
+			smallIndicator:   { lineWidth: 4, startAt: 89, endAt: 93, color: "white", alpha: 1 },
+			largeIndicator:   { lineWidth: 8, startAt: 80, endAt: 93, color: "white", alpha: 1 },
+			hourHand:         { lineWidth: 12, startAt: -15, endAt: 60, color: "white", alpha: 1 },
+			minuteHand:       { lineWidth: 10, startAt: -15, endAt: 85, color: "white", alpha: 1 },
+			secondHand:       { lineWidth: 4, startAt: -20, endAt: 85, color: "red", alpha: 1 },
 			secondDecoration: { lineWidth: 2, startAt: 70, radius: 8, fillColor: "red", color: "red", alpha: 1 }
 		}
-
 	},
 
 	// Test for IE so we can nurse excanvas in a couple of places
@@ -150,7 +149,7 @@ CoolClock.prototype = {
 
 	// Draw a circle at point x,y with params as defined in skin
 	fullCircleAt: function(x,y,skin) {
-		var lineWidth = skin.lineWidth;					// [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
+		var lineWidth = skin.lineWidth;                 // [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
 		this.ctx.save();
 		this.ctx.globalAlpha = skin.alpha;
 		this.ctx.lineWidth = lineWidth;
@@ -165,11 +164,6 @@ CoolClock.prototype = {
 		}
 
 		this.ctx.arc(x, y, skin.radius, 2*Math.PI, 0, true);
-
-		//if (CoolClock.config.isIE) {
-		//	// excanvas doesn't close the circle so let's fill in the tiny gap
-		//	this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
-		//}
 
 		// prevent FF4 from yakking about canvas: "an attempt to set strokeStyle or fillStyle to a value that is neither a string, a CanvasGradient, or a CanvasPattern was ignored."
 		//
@@ -226,7 +220,7 @@ CoolClock.prototype = {
 
 	timeText: function(hour,min,sec,skin) {
 		var am_pm = (this.showAmPm ? skin.AmPm : false);
-		var ss = (skin.showDigitalSeconds !== false && this.showDigitalSeconds);	// when 'showDigitalSeconds' is not an element of the skin, it is ASSUMED to be TRUE
+		var ss = (skin.showDigitalSeconds !== false && this.showDigitalSeconds);    // when 'showDigitalSeconds' is not an element of the skin, it is ASSUMED to be TRUE
 		return '' +
 			(am_pm ? ((hour % 12) == 0 ? 12 : (hour % 12)) : hour) + ':' +
 			this.lpad2(min) +
@@ -237,7 +231,7 @@ CoolClock.prototype = {
 	// Draw a radial line by rotating then drawing a straight line
 	// Ha ha, I think I've accidentally used Taus, (see http://tauday.com/)
 	radialLineAtAngle: function(angleFraction,skin) {
-		var lineWidth = skin.lineWidth;					// [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
+		var lineWidth = skin.lineWidth;                 // [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
 		this.ctx.save();
 		this.ctx.translate(this.renderRadius,this.renderRadius);
 		this.ctx.rotate(Math.PI * (2.0 * angleFraction - 0.5));
@@ -335,7 +329,7 @@ CoolClock.prototype = {
 		}
 
 		if (skin.minuteHand) {
-			var sm = (this.smoothMinutesHand && skin.smoothMinutesHand !== false);			// when this setting isn't in the skin, assume TRUE for the skin.
+			var sm = (this.smoothMinutesHand && skin.smoothMinutesHand !== false);          // when this setting isn't in the skin, assume TRUE for the skin.
 			this.radialLineAtAngle(this.tickAngle((min + (sm ? sec/60.0 : 0))),skin.minuteHand);
 		}
 
@@ -432,7 +426,7 @@ CoolClock.findAndCreateClocks = function(el) {
 				showDigital:    fields[5]==='showDigital',
 				logClock:       fields[6]==='logClock',
 				logClockRev:    fields[6]==='logClockRev',
-				showAmPm:		fields.length <= 7 || fields[7]==='showAmPm',
+				showAmPm:       fields.length <= 7 || fields[7]==='showAmPm',
 				showDigitalSeconds: fields.length <= 8 || fields[8]==='showDigitalSeconds'
 			});
 
