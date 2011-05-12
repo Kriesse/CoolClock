@@ -444,3 +444,10 @@ if (window.jQuery)
 {
 	jQuery(document).ready(CoolClock.findAndCreateClocks);
 }
+if (window.MooTools)
+{
+	window.addEvent('load', function()
+	{
+		CoolClock.findAndCreateClocks();
+	});
+}
