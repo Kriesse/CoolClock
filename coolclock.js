@@ -89,7 +89,7 @@ CoolClock.prototype = {
 		this.displayRadius  = options.displayRadius || CoolClock.config.defaultRadius;
 		this.showSecondHand = typeof options.showSecondHand === "boolean" ? options.showSecondHand : true;
 		this.smoothMinutesHand = typeof options.smoothMinutesHand === "boolean" ? options.smoothMinutesHand : false;
-		this.gmtOffset      = (options.gmtOffset != null && options.gmtOffset != '') ? parseFloat(options.gmtOffset) : null;
+		this.gmtOffset      = (options.gmtOffset != null && options.gmtOffset !== '') ? parseFloat(options.gmtOffset) : null;
 		this.showDigital    = typeof options.showDigital === "boolean" ? options.showDigital : false;
 		this.logClock       = typeof options.logClock === "boolean" ? options.logClock : false;
 		this.logClockRev    = typeof options.logClock === "boolean" ? options.logClockRev : false;
@@ -97,6 +97,9 @@ CoolClock.prototype = {
 		this.showDigitalSeconds = typeof options.showDigitalSeconds === "boolean" ? options.showDigitalSeconds : true;
 		this.renderDigitalOffsetX = 0;
 		this.renderDigitalOffsetY = 0;
+		this.fetchCurrentTime = typeof options.fetchCurrentTime === "function" ? options.fetchCurrentTime : function() {
+			return new Date();
+		};
 
 		this.lastDrawnState = false;
 
@@ -399,7 +402,7 @@ CoolClock.prototype = {
 
 	// Check the time and display the clock
 	refreshDisplay: function() {
-		var now = new Date();
+		var now = this.fetchCurrentTime();
 		if (this.gmtOffset != null) {
 			// Use GMT + gmtOffset
 			var offsetNow = new Date(now.valueOf() + (this.gmtOffset * 1000 * 60 * 60));
@@ -436,7 +439,7 @@ CoolClock.prototype = {
 
 // Find all canvas elements that have the CoolClock class and turns them into clocks
 CoolClock.findAndCreateClocks = function(el) {
-	var i;
+	var i, cv;
 	// (Let's not use a jQuery selector here so it's easier to use frameworks other than jQuery)
 	// [i_a] jQuery sends the jQuery object as argument to any ready() handler, so 'el' can be a /function/ then! Reject it then and fall back to the document.
 	var canvases = ((typeof el !== 'function' ? el : null) || document).getElementsByTagName("canvas");
@@ -445,7 +448,7 @@ CoolClock.findAndCreateClocks = function(el) {
 		var elemID = canvases[i].id;
 		if (elemID)
 		{
-			var cv = $(elemID);
+			cv = $(elemID);
 			if (cv && cv.retrieve)
 			{
 				var clkcls = cv.retrieve('coolclock');
@@ -465,7 +468,7 @@ CoolClock.findAndCreateClocks = function(el) {
 				elemID = canvases[i].id = '_coolclock_auto_id_' + CoolClock.config.noIdCount++;
 			}
 
-			var cv = $(elemID);
+			cv = $(elemID);
 
 			// Create a clock object for this element
 			var clki = new CoolClock({
