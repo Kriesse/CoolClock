@@ -89,6 +89,7 @@ CoolClock.prototype = {
 		this.skinId         = options.skinId || CoolClock.config.defaultSkin;
 		this.displayRadius  = options.displayRadius || CoolClock.config.defaultRadius;
 		this.showSecondHand = typeof options.showSecondHand === "boolean" ? options.showSecondHand : true;
+		this.smoothMinutesHand = typeof options.smoothMinutesHand === "boolean" ? options.smoothMinutesHand : false;
 		this.gmtOffset      = (options.gmtOffset != null && options.gmtOffset != '') ? parseFloat(options.gmtOffset) : null;
 		this.showDigital    = typeof options.showDigital === "boolean" ? options.showDigital : false;
 		this.logClock       = typeof options.logClock === "boolean" ? options.logClock : false;
