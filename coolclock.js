@@ -18,10 +18,6 @@ CoolClock.config = {
 	defaultRadius: 75,    // The ACTUAL radius at which the clock will be SHOWN ON SCREEN; the ratio of this one and 'renderRadius' determines the scaling applied to the skin.
 	renderRadius: 100,    // the radius at which all elements are rendered, i.e. the radius assumed by all the skins. Keep at 100.
 	defaultSkin: "chunkySwiss",
-	// Should be in skin probably...
-	// (TODO: allow skinning of digital display)
-	showSecs: true,
-	showAmPm: true,
 
 	skins:	{
 		// There are more skins in moreskins.js
@@ -94,6 +90,10 @@ CoolClock.prototype = {
 		this.showDigital    = typeof options.showDigital === "boolean" ? options.showDigital : false;
 		this.logClock       = typeof options.logClock === "boolean" ? options.logClock : false;
 		this.logClockRev    = typeof options.logClock === "boolean" ? options.logClockRev : false;
+		this.showAmPm       = typeof options.showAmPm === "boolean" ? options.showAmPm : true;
+		this.showDigitalSeconds = typeof options.showDigitalSeconds === "boolean" ? options.showDigitalSeconds : true;
+		this.renderDigitalOffsetX = 0;
+		this.renderDigitalOffsetY = 0;
 
 		this.lastDrawnState = false;
 
@@ -194,9 +194,10 @@ CoolClock.prototype = {
 	},
 
 	// Draw some text centered vertically and horizontally
-	drawTextAt: function(theText,x,y) {
+	drawTextAt: function(theText, x, y, skin) {
 		this.ctx.save();
-		this.ctx.font = '15px sans-serif';
+		this.ctx.font = skin.font;
+		this.ctx.color = skin.color;
 		var tSize = this.ctx.measureText(theText);
 		if (!tSize.height) { tSize.height = 15; } // no height in firefox.. :(
 		this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
@@ -223,13 +224,14 @@ CoolClock.prototype = {
 		}
 	},
 
-	timeText: function(hour,min,sec) {
-		var c = CoolClock.config;
+	timeText: function(hour,min,sec,skin) {
+		var am_pm = (this.showAmPm ? skin.AmPm : false);
+		var ss = (skin.showDigitalSeconds !== false && this.showDigitalSeconds);	// when 'showDigitalSeconds' is not an element of the skin, it is ASSUMED to be TRUE
 		return '' +
-			(c.showAmPm ? ((hour%12)==0 ? 12 : (hour%12)) : hour) + ':' +
+			(am_pm ? ((hour % 12) == 0 ? 12 : (hour % 12)) : hour) + ':' +
 			this.lpad2(min) +
-			(c.showSecs ? ':' + this.lpad2(sec) : '') +
-			(c.showAmPm ? (hour < 12 ? ' am' : ' pm') : '');
+			(ss ? ':' + this.lpad2(sec) : '') +
+			(am_pm ? am_pm[1 * (hour < 12)] : '');
 	},
 
 	// Draw a radial line by rotating then drawing a straight line
@@ -270,9 +272,9 @@ CoolClock.prototype = {
 	 * to detect any change in the settings and timestamp, which would mean a redraw/render is required.
 	 */
 	calc_state_hash: function(hour, min, sec, skin) {
-		var ss = ((skin.secondHand || skin.secondDecoration) && this.showSecondHand) || this.showDigital;
+		var ss = ((skin.secondHand || skin.secondDecoration) && this.showSecondHand) || (skin.digital && this.showDigital);
 		var h = hour * 3600 + min * 60 + (ss ? sec : 0);
-		var c = 1 * this.showDigital + 2 * this.showSecondHand + 4 * this.logClock + 8 * this.logClockRev;
+		var c = 1 * this.showDigital + 2 * this.showSecondHand + 4 * this.logClock + 8 * this.logClockRev + 16 * this.showAmPm + 64 * this.showDigitalSeconds + 128 * this.smoothMinutesHand;
 
 		h = h * 256 + c;
 
@@ -318,11 +320,12 @@ CoolClock.prototype = {
 		}
 
 		// Write the time
-		if (this.showDigital) {
+		if (this.showDigital && skin.digital) {
 			this.drawTextAt(
-				this.timeText(hour,min,sec),
-				this.renderRadius,
-				this.renderRadius+this.renderRadius/2
+				this.timeText(hour,min,sec, skin.digital),
+				this.renderRadius + this.renderDigitalOffsetX,
+				this.renderRadius + this.renderRadius/2 + this.renderDigitalOffsetY,
+				skin.digital
 			);
 		}
 
@@ -428,7 +431,9 @@ CoolClock.findAndCreateClocks = function(el) {
 				gmtOffset:      fields[4],
 				showDigital:    fields[5]==='showDigital',
 				logClock:       fields[6]==='logClock',
-				logClockRev:    fields[6]==='logClockRev'
+				logClockRev:    fields[6]==='logClockRev',
+				showAmPm:		fields.length <= 7 || fields[7]==='showAmPm',
+				showDigitalSeconds: fields.length <= 8 || fields[8]==='showDigitalSeconds'
 			});
 
 			if (cv && cv.store)
