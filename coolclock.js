@@ -15,8 +15,6 @@ window.CoolClock = function(options) {
 
 // Config contains some defaults, and clock skins
 CoolClock.config = {
-	tickDelay: 1000,
-	longTickDelay: 15000,
 	defaultRadius: 75,    // The ACTUAL radius at which the clock will be SHOWN ON SCREEN; the ratio of this one and 'renderRadius' determines the scaling applied to the skin.
 	renderRadius: 100,    // the radius at which all elements are rendered, i.e. the radius assumed by all the skins. Keep at 100.
 	defaultSkin: "chunkySwiss",
@@ -75,7 +73,10 @@ CoolClock.config = {
 	clockTracker: {},
 
 	// For giving a unique id to coolclock canvases with no id
-	noIdCount: 0
+	noIdCount: 0,
+
+	// the clock interval timer: common for all clocks
+	tickInterval: null
 };
 
 // Define the CoolClock object's methods
@@ -93,7 +94,8 @@ CoolClock.prototype = {
 		this.logClock       = typeof options.logClock === "boolean" ? options.logClock : false;
 		this.logClockRev    = typeof options.logClock === "boolean" ? options.logClockRev : false;
 
-		this.tickDelay      = CoolClock.config[ this.showSecondHand ? "tickDelay" : "longTickDelay" ];
+		this.lastDrawnState = false;
+
 
 		// Get the canvas element
 		this.canvas = document.getElementById(this.canvasId);
@@ -117,9 +119,24 @@ CoolClock.prototype = {
 
 		// should we be running the clock?
 		this.active = true;
-		this.tickTimeout = null;
 
 		// Start the clock going
+		if (!CoolClock.config.tickInterval) {
+			CoolClock.config.tickInterval = setInterval(function() {
+				// for each clock, fire the redraw/render code at least ten times as fast as we do expect visual change:
+				// the render optimization will take of that, while we ensure a superb visual result over time
+				// (less frequest render attempts result in a visual 'jitter' of the second hand, for one)
+				for (var key in CoolClock.config.clockTracker)
+				{
+					var cc = CoolClock.config.clockTracker[key];
+					// skip anything in there that's not a clock:
+					if (!cc || !cc.tick)
+						continue;
+
+					cc.tick();
+				}
+			}, 100);
+		}
 		this.tick();
 
 		return this;
@@ -232,12 +249,45 @@ CoolClock.prototype = {
 		this.ctx.restore();
 	},
 
+	/*
+	 * Internal Use Only:
+	 *
+	 * calculates a state hash of the time stamp and the important CoolClock settings: these are combined
+	 * to detect any change in the settings and timestamp, which would mean a redraw/render is required.
+	 */
+	calc_state_hash: function(hour, min, sec, skin) {
+		var ss = ((skin.secondHand || skin.secondDecoration) && this.showSecondHand) || this.showDigital;
+		var h = hour * 3600 + min * 60 + (ss ? sec : 0);
+		var c = 1 * this.showDigital + 2 * this.showSecondHand + 4 * this.logClock + 8 * this.logClockRev;
+
+		h = h * 256 + c;
+
+		// as skinId is a string, we append it after we're done mixing the integer and boolean items into a single state/hash number:
+		h = '' + (this.skinId ? this.skinId : '-') + ':' + h + ':' + this.displayRadius + ':' + this.gmtOffset + ':' + this.renderDigitalOffsetX + ':' + this.renderDigitalOffsetY;
+
+		return h;
+	},
+
+	/*
+	 * [i_a] CoolClock records the timestamp of the last rendering of the clock:
+	 * when render() is invoked multiple times for the same timestamp, only the first call
+	 * will actually render the clock, thus keeping the CPU load at a minimum.
+	 *
+	 * You can reset the render state to FORCE a redraw:
+	 *
+	 *   this.lastDrawnState = false; // resets draw state.
+	 */
 	render: function(hour,min,sec) {
 		var i;
 
 		// Get the skin
 		var skin = CoolClock.config.skins[this.skinId];
 		if (!skin) { skin = CoolClock.config.skins[CoolClock.config.defaultSkin]; }
+
+		// should we draw or have we done the same before already?
+		var h = this.calc_state_hash(hour, min, sec, skin);
+		if (h === this.lastDrawnState)
+			return;
 
 		// Clear
 		this.ctx.clearRect(0,0,this.renderRadius*2,this.renderRadius*2);
@@ -278,6 +328,9 @@ CoolClock.prototype = {
 		if (this.showSecondHand && skin.secondDecoration) {
 			this.radialLineAtAngle(this.tickAngle(sec),skin.secondDecoration);
 		}
+
+		// and remember we did this, so we don't have to do the same all over again:
+		this.lastDrawnState = h;
 	},
 
 	// Check the time and display the clock
@@ -294,11 +347,6 @@ CoolClock.prototype = {
 		}
 	},
 
-	// Set timeout to trigger a tick in the future
-	nextTick: function() {
-		this.tickTimeout = setTimeout("CoolClock.config.clockTracker['"+this.canvasId+"'].tick()",this.tickDelay);
-	},
-
 	// Check the canvas element hasn't been removed
 	stillHere: function() {
 		return document.getElementById(this.canvasId) != null;
@@ -307,22 +355,17 @@ CoolClock.prototype = {
 	// Stop this clock
 	stop: function() {
 		this.active = false;
-		clearTimeout(this.tickTimeout);
 	},
 
 	// Start this clock
 	start: function() {
-		if (!this.active) {
-			this.active = true;
-			this.tick();
-		}
+		this.active = true;
 	},
 
-	// Main tick handler. Refresh the clock then setup the next tick
+	// Main tick handler. Refresh the clock.
 	tick: function() {
 		if (this.stillHere() && this.active) {
 			this.refreshDisplay();
-			this.nextTick();
 		}
 	}
 };
