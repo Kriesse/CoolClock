@@ -208,28 +208,27 @@ CoolClock.prototype = {
 			this.ctx.lineWidth = lineWidth * this.scale;
 		}
 
-		this.ctx.color = skin.color;
-		var tSize = this.ctx.measureText(theText);
-		if (!tSize.height) { tSize.height = 15; } // no height in firefox.. :(
+		this.ctx.textBaseline = 'middle';
+		this.ctx.textAlign = 'center';
 
 		// prevent FF4 from yakking about canvas: "an attempt to set strokeStyle or fillStyle to a value that is neither a string, a CanvasGradient, or a CanvasPattern was ignored."
 		//
 		// also prevent FF4 from drawing strokes of /intended/ lineWidth==0 as (mutated by FF4 in .ctx.lineWidth) lineWidth==1
 		if (skin.fillColor && skin.color && lineWidth > 0) {
 			this.ctx.fillStyle = skin.fillColor;
-			this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
+			this.ctx.fillText(theText,x,y);
 			this.ctx.strokeStyle = skin.color;
-			this.ctx.strokeText(theText,x - tSize.width/2,y - tSize.height/2);
+			this.ctx.strokeText(theText,x,y);
 		}
 		else if (skin.fillColor) {
 			// only fill
 			this.ctx.fillStyle = skin.fillColor;
-			this.ctx.fillText(theText,x - tSize.width/2,y - tSize.height/2);
+			this.ctx.fillText(theText,x,y);
 		}
 		else if (skin.color && lineWidth > 0) {
 			// only stroke
 			this.ctx.strokeStyle = skin.color;
-			this.ctx.strokeText(theText,x - tSize.width/2,y - tSize.height/2);
+			this.ctx.strokeText(theText,x,y);
 		}
 		this.ctx.restore();
 	},
