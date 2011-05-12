@@ -17,7 +17,7 @@ window.CoolClock = function(options) {
 CoolClock.config = {
 	tickDelay: 1000,
 	longTickDelay: 15000,
-	defaultRadius: 85,    // The ACTUAL radius at which the clock will be SHOWN ON SCREEN; the ratio of this one and 'renderRadius' determines the scaling applied to the skin.
+	defaultRadius: 75,    // The ACTUAL radius at which the clock will be SHOWN ON SCREEN; the ratio of this one and 'renderRadius' determines the scaling applied to the skin.
 	renderRadius: 100,    // the radius at which all elements are rendered, i.e. the radius assumed by all the skins. Keep at 100.
 	defaultSkin: "chunkySwiss",
 	// Should be in skin probably...
