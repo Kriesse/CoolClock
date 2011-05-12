@@ -149,9 +149,10 @@ CoolClock.prototype = {
 
 	// Draw a circle at point x,y with params as defined in skin
 	fullCircleAt: function(x,y,skin) {
+		var lineWidth = skin.lineWidth;					// [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
 		this.ctx.save();
 		this.ctx.globalAlpha = skin.alpha;
-		this.ctx.lineWidth = skin.lineWidth;
+		this.ctx.lineWidth = lineWidth;
 
 		if (!CoolClock.config.isIE) {
 			this.ctx.beginPath();
@@ -159,7 +160,7 @@ CoolClock.prototype = {
 
 		if (CoolClock.config.isIE) {
 			// excanvas doesn't scale line width so we will do it here
-			this.ctx.lineWidth = this.ctx.lineWidth * this.scale;
+			this.ctx.lineWidth = lineWidth * this.scale;
 		}
 
 		this.ctx.arc(x, y, skin.radius, 2*Math.PI, 0, true);
@@ -169,7 +170,10 @@ CoolClock.prototype = {
 		//	this.ctx.arc(x, y, skin.radius, -0.1, 0.1, false);
 		//}
 
-		if (skin.fillColor && skin.color) {
+		// prevent FF4 from yakking about canvas: "an attempt to set strokeStyle or fillStyle to a value that is neither a string, a CanvasGradient, or a CanvasPattern was ignored."
+		//
+		// also prevent FF4 from drawing strokes of /intended/ lineWidth==0 as (mutated by FF4 in .ctx.lineWidth) lineWidth==1
+		if (skin.fillColor && skin.color && lineWidth > 0) {
 			this.ctx.fillStyle = skin.fillColor;
 			this.ctx.fill();
 			this.ctx.strokeStyle = skin.color;
@@ -180,7 +184,7 @@ CoolClock.prototype = {
 			this.ctx.fillStyle = skin.fillColor;
 			this.ctx.fill();
 		}
-		else {
+		else if (skin.color && lineWidth > 0) {
 			// only stroke
 			this.ctx.strokeStyle = skin.color;
 			this.ctx.stroke();
@@ -230,22 +234,26 @@ CoolClock.prototype = {
 	// Draw a radial line by rotating then drawing a straight line
 	// Ha ha, I think I've accidentally used Taus, (see http://tauday.com/)
 	radialLineAtAngle: function(angleFraction,skin) {
+		var lineWidth = skin.lineWidth;					// [i_a] keep track of lineWidth ourselves; FF4 mutates the value in the .ctx.lineWidth!
 		this.ctx.save();
 		this.ctx.translate(this.renderRadius,this.renderRadius);
 		this.ctx.rotate(Math.PI * (2.0 * angleFraction - 0.5));
 		this.ctx.globalAlpha = skin.alpha;
 		this.ctx.strokeStyle = skin.color;
-		this.ctx.lineWidth = skin.lineWidth;
+		this.ctx.lineWidth = lineWidth;
 
 		if (CoolClock.config.isIE) {
 			// excanvas doesn't scale line width so we will do it here
-			this.ctx.lineWidth = this.ctx.lineWidth * this.scale;
+			this.ctx.lineWidth = lineWidth * this.scale;
 		}
 
+		// prevent FF4 from yakking about canvas: "an attempt to set strokeStyle or fillStyle to a value that is neither a string, a CanvasGradient, or a CanvasPattern was ignored."
+		//
+		// also prevent FF4 from drawing strokes of /intended/ lineWidth==0 as (mutated by FF4 in .ctx.lineWidth) lineWidth==1
 		if (skin.radius) {
 			this.fullCircleAt(skin.startAt,0,skin);
 		}
-		else {
+		else if (lineWidth > 0) {
 			this.ctx.beginPath();
 			this.ctx.moveTo(skin.startAt,0);
 			this.ctx.lineTo(skin.endAt,0);
