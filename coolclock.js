@@ -387,7 +387,9 @@ CoolClock.prototype = {
 CoolClock.findAndCreateClocks = function(el) {
 	var i;
 	// (Let's not use a jQuery selector here so it's easier to use frameworks other than jQuery)
-	var canvases = (el || document).getElementsByTagName("canvas");
+	// [i_a] jQuery sends the jQuery object as argument to any ready() handler, so 'el' can be a /function/ then! Reject it then and fall back to the document.
+	var canvases = ((typeof el !== 'function' ? el : null) || document).getElementsByTagName("canvas");
+
 	for (i = 0; i < canvases.length; i++) {
 		var elemID = canvases[i].id;
 		if (elemID)
@@ -436,4 +438,7 @@ CoolClock.findAndCreateClocks = function(el) {
 
 // If you don't have jQuery then you need a body onload like this: <body onload="CoolClock.findAndCreateClocks()">
 // If you do have jQuery and it's loaded already then we can do it right now
-if (window.jQuery) { jQuery(document).ready(CoolClock.findAndCreateClocks); }
+if (window.jQuery)
+{
+	jQuery(document).ready(CoolClock.findAndCreateClocks);
+}
